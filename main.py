@@ -6,9 +6,11 @@ class Cliente:
         self.endereco = endereco
         self.contas = []
         self.saldo = saldo
-        self.agencia =
+        self.agencia = f"{randint(1, 999):03d}"
+        self.numero = f"{randint(1, 99999):05d}"
 
-    def validar_cpf(self, cpf):
+
+def validar_cpf(self, cpf):
         return cpf.isdigit() and len(cpf) == 11
 
     def validar_data_nascimento(self, data_nasc_str):
