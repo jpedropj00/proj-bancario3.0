@@ -1,5 +1,5 @@
 from datetime import datetime
-from randint
+from random import randint
 
 class Cliente:
     def __init__(self, endereco, saldo=0):
