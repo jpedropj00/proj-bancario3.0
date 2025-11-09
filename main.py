@@ -2,6 +2,7 @@ from datetime import datetime
 from random import randint
 
 class Cliente:
+    contasRegistradas = []
     def __init__(self, endereco, saldo=0):
         self.endereco = endereco
         self.contas = []
@@ -10,8 +11,8 @@ class Cliente:
         self.numero = f"{randint(1, 99999):05d}"
 
 
-def validar_cpf(self, cpf):
-        return cpf.isdigit() and len(cpf) == 11
+    def validar_cpf(self, cpf):
+            return cpf.isdigit() and len(cpf) == 11
 
     def validar_data_nascimento(self, data_nasc_str):
         try:
@@ -32,15 +33,12 @@ def validar_cpf(self, cpf):
             return True
         else:
             return False
-    def listar_contas(self):
-        return self.contas
-    def verificar_user_existente(self):
-        for conta in self.contas:
-            if conta["cpf"] == self.cpf:
-                print("⚠️ Já existe uma conta cadastrada com esse CPF.")
+    def verificar_user_existente(self,cpf,numero):
+        for conta in PessoaFisica.contasRegistradas:
+            if conta["cpf"] == cpf and conta["numero_conta"] == numero:
+                print("⚠️ Já existe uma conta cadastrada com esse CPF e número de conta.")
                 return False
-            else:
-                return True
+        return True
 
 class PessoaFisica(Cliente):
     limiteSaqueValor = 500
@@ -60,7 +58,7 @@ class PessoaFisica(Cliente):
         if not self.validar_cpf(self.cpf):
             print("⚠️ CPF inválido! Deve conter 11 números.")
             return
-        if not self.verificar_user_existente(self.cpf):
+        if not self.verificar_user_existente(self.cpf, self.numero):
             print('Conta já existente')
             return
         self.endereco = input("Digite seu endereço: ")
@@ -84,11 +82,13 @@ class PessoaFisica(Cliente):
             "cpf": self.cpf,
             "endereco": self.endereco,
             "data_nascimento": self.data_nasc,
+            "numero_conta": self.numero,
+            "agencia": self.agencia,
             "saques": [],
             "depositos": []
         }
 
-        self.contas.append(self.conta)
+        self.contasRegistradas.append(self.conta)
         print("✅ Conta criada com sucesso!")
 
     def depositar(self, valor):
@@ -144,7 +144,46 @@ class PessoaFisica(Cliente):
         print("-" * 25)
         print(f"💼 Saldo atual: R$ {self.saldo:.2f}")
         return
-print('-----MENU------\n[1]')
+print('-----MENU------\n[0]Sair\n[1]Criar Conta\n[2]Depositar\n[3]Sacar\n[4]Mostrar Extrato')
+while True:
+    try:
+        escolha = int(input('Digite sua escolha: '))
+        if escolha < 0 or escolha > 4:
+            break
+        else:
+            if escolha == 0:
+                print("👋 Encerrando o programa.")
+                break
+
+            elif escolha == 1:
+                print("\n--- Criar Conta ---")
+                cliente = PessoaFisica("", "", "", "")
+                cliente.criar_conta()
+
+            elif escolha == 2:
+                if not cliente:
+                    print("⚠️ Crie uma conta primeiro!")
+                    continue
+                valor = input("Digite o valor para depósito: ")
+                print(cliente.depositar(valor))
+
+            elif escolha == 3:
+                if not cliente:
+                    print("⚠️ Crie uma conta primeiro!")
+                    continue
+                valor = input("Digite o valor para saque: ")
+                print(cliente.sacar(valor))
+
+            elif escolha == 4:
+                if not cliente:
+                    print("⚠️ Crie uma conta primeiro!")
+                    continue
+                cliente.mostrar_extrato()
+    except ValueError:
+        print('Não válido')
+        continue
+
+
 
 
 
